@@ -14,13 +14,13 @@ export default function (express, bodyParser, createReadStream, crypto, http) {
         res.send("itmo286434");
     }
 
-    function code(req, res) {
-        res.set(headers)
-        fs.readFile(import.meta.url.substring(7),(err, data) => {
-            if (err) throw err;
-            res.end(data);
-        }); 
-    }
+    async function code(request, response) {
+        const reader = createReadStream(import.meta.url.substring(7))
+        reader.setEncoding('utf8')
+        let result = ''
+        for await (const chunk of reader) result += chunk
+        response.send(result)
+    } 
 
     function sha1(request, response) {
         response.send(crypto.createHash('sha1').update(request.params.input).digest('hex'))
